@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>login</title>
 </head>
 
 <body>
@@ -27,25 +27,25 @@
 
 
             $.ajax({
-                url: '/api/login',
+                url: '/login',
                 type: 'POST',
                 contentType: "application/json",
                 data: JSON.stringify({ email, password }),
+                xhrFields: { withCredentials: true },
+                success: function (response) {
+                    console.log(response);
 
-                success: function (resposnse) {
-                    
-                    alert(resposnse.message)
+                    // alert(response.message)
                     if (response.redirect) {
-                        window.location.href = response.redirect;
-                    }else{
+                        window.location.replace(response.redirect);
 
                     }
                 },
 
-                error: function (err) {
-                    console.log(err.message);
-                    alert(err.message);
-
+                error: function (xhr) {
+                    const errMsg = xhr.responseJSON?.message || "Something went wrong";
+                    alert(errMsg);
+                    console.error(errMsg);
                 }
 
 

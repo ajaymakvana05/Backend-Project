@@ -3,50 +3,10 @@ const jwt = require('jsonwebtoken');
 const admin = require('../models/admin');
 const User = require('../models/user')
 
-class admincontroller {
-    // login = async (req, res) => {
-
-    //     try {
-    //         const { email, password } = req.body;
-    //         console.log(req.body);
-
-    //         if (!email || !password) {
-    //             return res.json({ message: 'All Field Are Required !' });
-    //         }
-
-    //         const user = await admin.findOne({ email });
-    //         console.log(user);
-
-    //         if (!user) {
-    //             return res.json({ message: 'User not found' });
-    //         }
-
-
-    //         const token = jwt.sign({ userId: user._id }, process.env.SECRET_TOKEN, { expiresIn: '24h', });
-    //         console.log("token ,", token);
-
-    //         res.cookie(
-    //             'adminToken', {
-    //             maxAge: 24 * 60 * 60 * 1000,
-    //             httpOnly: true,
-    //             secure: false
-
-    //         })
-
-
-    //         return res.status(200).json({ status: true, message: "Login Successfully............", token });
-    //     } catch (error) {
-    //         console.log(error);
-    //         return res.json({ status: false, message: 'Internal Server Error', error: error })
-
-    //     }
-
-    // }
-
-
+class Admincontroller {
 
     admin = (req, res) => {
-        res.render('/admindashboard');
+        res.render('admindashboard/admindashboard');
     }
 
     loginAuth = async (req, res) => {
@@ -58,8 +18,8 @@ class admincontroller {
         }
 
         try {
-            const adminAuth = await admin.findOne({ email })
-            const userAuth = await User.findOne({ email })
+            const adminAuth = await admin.findOne({ email });
+            const userAuth = await User.findOne({ email });
 
             if (!adminAuth && !userAuth) {
                 return res.status(404).json({ message: 'User not found' });
@@ -74,13 +34,13 @@ class admincontroller {
                 console.log("AdminToken", token);
 
                 res.cookie(
-                    'adminToken', token, {
+                    'adminToken', {
                     maxAge: 24 * 60 * 60 * 1000,
                     httpOnly: true,
                     secure: false
                 })
 
-                return res.status(201).json({ message: 'Login Succesfully....', admin: adminAuth, redirect: '/admin/dashboard' });
+                return res.status(200).json({ message: 'Login Succesfully....', admin: adminAuth, redirect: '/admin/dashboard' });
 
             }
 
@@ -95,7 +55,7 @@ class admincontroller {
 
 
                 res.cookie(
-                    'userToken', token, {
+                    'userToken', {
                     maxAge: 24 * 60 * 60 * 1000,
                     httpOnly: true,
                     secure: false
@@ -175,4 +135,4 @@ class admincontroller {
     }
 }
 
-module.exports = new admincontroller();
+module.exports = new Admincontroller();
