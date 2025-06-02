@@ -2,24 +2,41 @@ const jwt = require('jsonwebtoken');
 
 module.exports.Authenticate = async (req, res, next) => {
 
-    const authHeader = req.header('Authorization');
+    const usertoken = req.cookies['userToken'];
 
-    if (!authHeader) {
-        return res.status(401).json({
-            error: 'Access denied. No token provided'
-        })
+    if (!usertoken) {
+        return res.redirect('/');
     }
 
-    const token = authHeader.replace(/Bearer\s+/gi, '').trim();
+    const token = usertoken;
 
-    console.log();
+    jwt.verify(token, process.env.SECRET_TOKEN, (err, user) => {
+        if (err) {
+            console.log('Error:', err);
+            return res.sendStatus(403);
+        }
+        req.user = user;
 
-    try {
-        const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-        req.userId = decoded.userId;
         next();
-    } catch (error) {
-        res.status(401).json({ error: 'Invalid token' });
+    })
+}
+
+
+module.exports.AuthenticateAdmin = (req, res, next) => {
+
+    const token = req.cookies['adminToken'];
+
+    if (!token) {
+        return res.redirect('/')
     }
+
+    jwt.verify(token, process.env.SECRET_TOKEN, (err, user) => {
+        if (err) {
+            console.log('Error:', err);
+            return res.sendStatus(403);
+        }
+        req.user = user;
+        next();
+    })
 
 }

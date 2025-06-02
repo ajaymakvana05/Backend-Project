@@ -11,15 +11,23 @@ app.set("view engine", 'ejs');
 app.use(cookieParser());
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 
 
-app.use('/', require('./routes/userroute'))
-app.use('/', require('./routes/adminroute'))
+app.use('/', require('./routes/userroute'));
+app.use('/', require('./routes/adminroute'));
 
-app.set('*', (req, res) => {
-    return res.redirect('/login');
-})
+app.post('/logout', (req, res) => {
+    res.clearCookie('userToken');
+    res.clearCookie('adminToken');
+    res.status(200).json({ message: 'Logged out successfully', redirect: '/' });
+
+});
+
+app.use((req, res) => {
+    res.status(404).send("Page not found. You are not authorized to access this URL.");
+});
+
 
 mongoose.connect(Mongo_Url).then(() => {
     app.listen(port, () => {

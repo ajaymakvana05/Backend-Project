@@ -1,11 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Dashboard</title>
+    <style>
+        #logoutUser {
+            background-color: red;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 20px;
+            color: whitesmoke;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #logoutUser:hover {
+            background-color: black;
+            transition: all 1s;
+            /* color: black; */
+        }
+    </style>
 </head>
+
 <body>
     <h1>User Dashboard</h1>
+    <button id="logoutUser">
+        Logout
+    </button>
+
+    <script>
+        $(document).ready(function () {
+            $('#logoutUser').click(function () {
+                // console.log('Logout Button Worked Succesfully......');
+                $.ajax({
+                    url: '/logout',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    xhrFields: { withCredentials: true },
+                    success: function (response) {
+                        alert('Logout Succesfully.........');
+                        if (response.redirect) {
+                            window.location.replace(response.redirect);
+                        }
+                    },
+                    error: function (xhr) {
+                        const errMsg = xhr.responseJSON?.message || "Something went wrong";
+                        alert(errMsg);
+                        console.error(errMsg);
+                    }
+                })
+            })
+        })
+    </script>
+
+
 </body>
+
 </html>

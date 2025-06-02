@@ -1,11 +1,450 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f4f6f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: #3f51b5;
+            color: #fff;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-container {
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .dashboard-container button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #logout {
+            background-color: #e53935;
+            color: #fff;
+        }
+
+        #logout:hover {
+            background-color: #c62828;
+        }
+
+        #addUser {
+            background-color: #43a047;
+            color: #fff;
+        }
+
+        #addUser:hover {
+            background-color: #388e3c;
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-container {
+                flex-direction: column;
+                gap: 15px;
+                width: 80%;
+            }
+
+            .dashboard-container button {
+                width: 100%;
+            }
+        }
+
+        .ui-button {
+            color: white;
+            background-color: black;
+            border-radius: 10px;
+            outline: none;
+            float: right;
+            display: flex;
+        }
+
+
+        #addUser {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #43a047, #66bb6a);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        #addUser:hover {
+            background: linear-gradient(135deg, #388e3c, #4caf50);
+            transform: scale(1.05);
+        }
+
+        /* Dialog Custom Styling */
+        .ui-dialog {
+            background-color: #1e1e1e !important;
+            border: none !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            padding: 0 !important;
+        }
+
+        .ui-dialog-titlebar {
+            background: #000 !important;
+            color: #fff !important;
+            border: none !important;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 15px 20px;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .ui-dialog-buttonpane {
+            background-color: #1e1e1e;
+            border-top: 1px solid #333;
+            padding: 20px;
+            display: flex;
+            justify-content: flex-end;
+            border-radius: 0px 0px 12px 12px;
+            gap: 10px;
+        }
+
+        .ui-dialog-buttonset button {
+            padding: 10px 20px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ui-dialog-buttonset button:first-child {
+            background: #ffffff;
+            color: #000;
+        }
+
+        .ui-dialog-buttonset button:first-child:hover {
+            background: #eeeeee;
+        }
+
+        .ui-dialog-buttonset button:last-child {
+            background: #e53935;
+            color: #fff;
+        }
+
+        .ui-dialog-buttonset button:last-child:hover {
+            background: #c62828;
+        }
+
+        /* Form Styling */
+        #userform form {
+            padding: 25px 30px;
+        }
+
+        #userform label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        #userform input[type="text"],
+        #userform input[type="email"],
+        #userform input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background-color: #2c2c2c;
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        #userform input:focus {
+            border-color: #888;
+            outline: none;
+        }
+
+        .button-submit {
+            padding: 10px 20px;
+            border-radius: 20px;
+            outline: none;
+            margin-top: 65px;
+            border: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            #addUser {
+                width: 90%;
+                border-radius: 12px;
+            }
+
+            .ui-dialog {
+                width: 90% !important;
+            }
+        }
+
+        #usertable {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            z-index: 1000;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #f44336;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Admin Dashboard</h1>
+
+    <header>
+        Admin Dashboard
+    </header>
+
+    <div class="dashboard-container">
+        <button id="logout">Log Out</button>
+        <button id="addUser">Add User</button>
+        <button onclick="togglePopup()">All User</button>
+    </div>
+
+    <div id="overlay" onclick="togglePopup()"></div>
+
+    <div id="usertable">
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        <table id="userTableContent">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="userform" title="Add New User" style="display: none;">
+        <form id="addUserForm">
+            <fieldset style="border: none; padding: 0; margin: 0;">
+                <label for="name">Full Name</label>
+                <input type="text" name="name" id="name" required>
+
+                <label for="email">Email Address</label>
+                <input type="email" name="email" id="email" required>
+
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+                <input type="submit" value="add User" class="button-submit">
+            </fieldset>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#logout').click(function () {
+                console.log("Logout initiated");
+                $.ajax({
+                    url: '/logout',
+                    type: 'POST',
+                    contentType: "application/json",
+                    xhrFields: { withCredentials: true },
+                    success: function (response) {
+                        console.log(response);
+                        if (response.redirect) {
+                            window.location.replace(response.redirect);
+                        }
+                    },
+                    error: function (xhr) {
+                        const errMsg = xhr.responseJSON?.message || "Something went wrong";
+                        alert(errMsg);
+                        console.error(errMsg);
+                    }
+                });
+            });
+
+
+        });
+
+        $(document).ready(function () {
+            $('#addUserForm').submit(function (event) {
+                event.preventDefault();
+
+                const data = {
+                    name: $('#name').val(),
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                }
+                console.log(data);
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/createUser',
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    xhrFields: { withCredentials: true },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.redirect) {
+                            window.location.replace(data.redirect);
+                        }
+                        alert('User added successfully!');
+
+                        $('#userform').dialog("close");
+
+                        // ✅ Reset form
+                        $('#addUserForm')[0].reset();
+
+                    },
+                    error: function (xhr) {
+                        const errMsg = xhr.responseJSON?.message || "Something went wrong";
+                        alert(errMsg);
+                        console.error(errMsg);
+                    }
+                })
+
+            })
+
+        })
+
+        $(function () {
+            var dialog = $("#userform").dialog({
+                autoOpen: false,
+                height: 500,
+                width: 350,
+                modal: true,
+                buttons: {
+                    Cancel: function () {
+                        dialog.dialog("close");
+                    }
+                }
+            });
+
+            $("#addUser").button().on("click", function () {
+                dialog.dialog("open");
+            });
+        });
+
+        function togglePopup() {
+            $("#usertable").fadeToggle();
+            $("#overlay").fadeToggle();
+
+            // if ($('#usertable').is(':visible')) {
+            // showdata();
+            // }
+            showdata();
+        }
+
+        function showdata() {
+            $.ajax({
+                url: '/admin/allUser',
+                type: 'GET',
+                success: function (data) {
+                    const users = data.allUser;
+                    let rows = '';
+
+                    users.forEach(user => {
+                        rows += `
+                                <tr>
+                                    <td>${user.name}</td>
+                                    <td>${user.email}</td>
+                                    </tr>
+                                `
+                        $('#userTableContent tbody').html(rows);
+                    });
+                },
+                error: function (xhr) {
+                    const errMsg = xhr.responseJSON?.message || 'Something Went Wrong';
+                    alert(errMsg);
+                    console.error(errMsg);
+
+                }
+            })
+        }
+    </script>
+
 </body>
+
 </html>

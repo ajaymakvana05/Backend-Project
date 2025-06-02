@@ -2,21 +2,113 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #4c8df3;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 141, 243, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #4c8df3;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #3a6dd4;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <form id="loginForm">
-        <input type="email" id="email" name="email" placeholder="Email" required>
-        <input type="password" id="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
+    <div id="error-notification" style="
+        position: fixed;
+        display: none;
+        top: 20px;
+        right: 20px;
+        background-color: #fdd;
+        padding: 10px 15px;
+        border: 1px solid red;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        z-index: 9999;
+     ">
+    </div>
 
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder="Email" required />
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" name="password" placeholder="Password" required />
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
     <script>
         $("#loginForm").submit(function (e) {
@@ -24,7 +116,6 @@
 
             const email = $("#email").val();
             const password = $("#password").val();
-
 
             $.ajax({
                 url: '/login',
@@ -34,25 +125,25 @@
                 xhrFields: { withCredentials: true },
                 success: function (response) {
                     console.log(response);
-
-                    // alert(response.message)
                     if (response.redirect) {
                         window.location.replace(response.redirect);
-
                     }
                 },
-
+                // error: function (xhr) {
+                //     const errMsg = xhr.responseJSON?.message || "Something went wrong";
+                //     alert(errMsg);
+                //     console.error(errMsg);
+                // }
                 error: function (xhr) {
-                    const errMsg = xhr.responseJSON?.message || "Something went wrong";
-                    alert(errMsg);
-                    console.error(errMsg);
+                    $("#error-notification").text(xhr.responseJSON?.message).fadeIn(500);
+                    setTimeout(function () {
+                        $("#error-notification").fadeOut(500);
+                    }, 2000);
                 }
 
-
-            })
-        })
+            });
+        });
     </script>
-
 </body>
 
 </html>
